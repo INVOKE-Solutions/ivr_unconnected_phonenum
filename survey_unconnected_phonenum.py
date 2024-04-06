@@ -28,7 +28,7 @@ def run():
     if 'all_unconnected_phonenum' not in st.session_state:
 
         # Setting up the file uploader widget
-        uploaded_files = st.file_uploader("Upload IVR Files (.csv format)", 
+        uploaded_files = st.file_uploader("Upload IVR raw results (.csv format)", 
                                           accept_multiple_files=True, 
                                           type=['csv', 'xlsx'], 
                                           help='You can upload multiple csv files at once')
