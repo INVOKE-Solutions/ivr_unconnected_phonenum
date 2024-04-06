@@ -66,7 +66,7 @@ def run():
 
         st.write(f"Total unconnected phone numbers: {len(all_unconnected_phonenum):,}")
 
-        st.dataframe(st.session_state['all_unconnected_phonenum'].sample(6))
+        st.dataframe(all_unconnected_phonenum.sample(6))
 
         # Current date for the filename
         formatted_date = datetime.now().strftime("%Y%m%d")
@@ -81,8 +81,13 @@ def run():
         if not output_filename.lower().endswith('.csv'):
             output_filename += '.csv'
 
-        # Download button
-        data_as_csv = st.session_state['all_unconnected_phonenum'].to_csv(index=False).encode('utf-8')
+        # Download unconnected phone numbers list
+        # 
+        all_unconnected_phonenum = all_unconnected_phonenum.sample(len(all_unconnected_phonenum))
+
+        # Convert to csv
+        data_as_csv = all_unconnected_phonenum.to_csv(index=False).encode('utf-8')
+        
         st.download_button(
             label="Download file",
             data=data_as_csv,
