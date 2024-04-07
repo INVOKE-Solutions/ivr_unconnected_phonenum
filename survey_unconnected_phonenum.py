@@ -14,13 +14,14 @@ st.set_page_config(
 
 st.title('IVR Unconnected Phone Numbers')
 
-st.markdown('''
-**NOTE:** This web app is meant to be used when all phone numbers for a given population is included in the sampling. 
-'''
+st.markdown(
+    '''
+    **NOTE:** This web app is meant to be used when all phone numbers for a given population is included in the sampling.
+    '''
 )
 
-def run():
-
+def main():
+    
     # Check if data is already processed and available in session state
     if 'processed' not in st.session_state:
         st.session_state['processed'] = False
@@ -28,7 +29,7 @@ def run():
     if 'all_unconnected_phonenum' not in st.session_state:
 
         # Setting up the file uploader widget
-        uploaded_files = st.file_uploader("Upload IVR raw results (.csv format)", 
+        uploaded_files = st.file_uploader("Upload IVR Files (.csv format)",
                                           accept_multiple_files=True, 
                                           type=['csv', 'xlsx'], 
                                           help='You can upload multiple csv files at once')
@@ -40,33 +41,31 @@ def run():
         if st.button('Process'):
             with st.spinner("Processing the files..."):
 
-                st.session_state['unconnected_phonenum'] = []
+                unconnected_phonenums = []
 
                 # Extract unconnected phone numbers only
                 for uploaded_file in uploaded_files:
                     unconnected_phonenum = extract_unconnected_phonenum(uploaded_file)
 
-                    st.session_state['unconnected_phonenum'].append(unconnected_phonenum)
+                    unconnected_phonenums.append(unconnected_phonenum)
                 
-                all_unconnected_phonenum = pd.concat(st.session_state['unconnected_phonenum'], ignore_index=True).drop_duplicates()
+                all_unconnected_phonenum = pd.concat(unconnected_phonenums, ignore_index=True).drop_duplicates()
 
                 st.session_state['all_unconnected_phonenum'] = all_unconnected_phonenum
                 
                 st.session_state['processed'] = True
-    else:
-        st.session_state['processed'] = False
-        st.write('**:red[An error has occurred. Please reload the web app.]**')
 
     if st.session_state['processed']:
         st.success("Files have been processed successfully ✨")
 
     if st.session_state['processed']:
+
         # Display a snippet of the cleaned data
         st.markdown("### Data Preview")
 
-        st.write(f"Total unconnected phone numbers: {len(all_unconnected_phonenum):,}")
+        st.write(f"Total unconnected phone numbers: {len(st.session_state['all_unconnected_phonenum']):,}")
 
-        st.dataframe(all_unconnected_phonenum.sample(6))
+        st.dataframe(st.session_state['all_unconnected_phonenum'].sample(6))
 
         # Current date for the filename
         formatted_date = datetime.now().strftime("%Y%m%d")
@@ -80,20 +79,23 @@ def run():
         # Check if the output filename ends with '.csv', if not append '.csv'
         if not output_filename.lower().endswith('.csv'):
             output_filename += '.csv'
-
+    
         # Download unconnected phone numbers list
-        # 
-        all_unconnected_phonenum = all_unconnected_phonenum.sample(len(all_unconnected_phonenum))
+        if st.session_state['processed']:
+            
+            # Randomize the phone numbers
+            all_unconnected_phonenum = st.session_state['all_unconnected_phonenum'].sample(len(st.session_state['all_unconnected_phonenum']))
 
-        # Convert to csv
-        data_as_csv = all_unconnected_phonenum.to_csv(index=False).encode('utf-8')
+            # Convert to csv
+            data_as_csv = all_unconnected_phonenum.to_csv(index=False).encode('utf-8')
+
+            st.download_button(
+                label="Download file",
+                data=data_as_csv,
+                file_name=output_filename,
+                mime='text/csv',
+                key='download'
+            )
         
-        st.download_button(
-            label="Download file",
-            data=data_as_csv,
-            file_name=output_filename,
-            mime='text/csv'
-        )
-        
-if __name__ == "__main__":
-    run()
+if __name__ == '__main__':
+    main()
