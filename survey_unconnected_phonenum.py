@@ -14,6 +14,14 @@ st.set_page_config(
 
 st.title('IVR Unconnected Phone Numbers')
 
+hide_streamlit_style = """
+            <style>
+            #MainMenu {visibility: hidden;}
+            footer {visibility: hidden;}
+            </style>
+            """
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+
 st.markdown(
     '''
     **NOTE:** This web app is meant to be used when all phone numbers for a given population is included in the sampling.
@@ -96,6 +104,11 @@ def main():
                 mime='text/csv',
                 key='download'
             )
+        
+        if 'downloaded' in st.session_state:
+            st.write('**\*Reload the page to upload another IVR results.**')
+        else:
+            st.session_state['downloaded'] = True
         
 if __name__ == '__main__':
     main()
