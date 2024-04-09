@@ -8,8 +8,7 @@ st.set_page_config(
     page_title='IVR Unconnected Phone Numbers',
     # page_icon=Image.open('./images/invoke_logo.png'),
     layout="centered",    
-    initial_sidebar_state="auto",
-
+    initial_sidebar_state="auto"
 )
 
 st.title('IVR Unconnected Phone Numbers')
