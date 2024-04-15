@@ -16,6 +16,7 @@ st.title('IVR Unconnected Phone Numbers')
 hide_streamlit_style = """
             <style>
             #MainMenu {visibility: hidden;}
+            header {visibility: hidden;}
             footer {visibility: hidden;}
             </style>
             """
