@@ -46,22 +46,22 @@ def main():
         if uploaded_files:
             st.write(f"Number of files uploaded: {len(uploaded_files)}")
 
-        if st.button('Process'):
-            with st.spinner("Processing the files..."):
+            if st.button('Process'):
+                with st.spinner("Processing the files..."):
 
-                unconnected_phonenums = []
+                    unconnected_phonenums = []
 
-                # Extract unconnected phone numbers only
-                for uploaded_file in uploaded_files:
-                    unconnected_phonenum = extract_unconnected_phonenum(uploaded_file)
+                    # Extract unconnected phone numbers only
+                    for uploaded_file in uploaded_files:
+                        unconnected_phonenum = extract_unconnected_phonenum(uploaded_file)
 
-                    unconnected_phonenums.append(unconnected_phonenum)
-                
-                all_unconnected_phonenum = pd.concat(unconnected_phonenums, ignore_index=True).drop_duplicates()
+                        unconnected_phonenums.append(unconnected_phonenum)
+                    
+                    all_unconnected_phonenum = pd.concat(unconnected_phonenums, ignore_index=True).drop_duplicates()
 
-                st.session_state['all_unconnected_phonenum'] = all_unconnected_phonenum
-                
-                st.session_state['processed'] = True
+                    st.session_state['all_unconnected_phonenum'] = all_unconnected_phonenum
+                    
+                    st.session_state['processed'] = True
 
     if st.session_state['processed']:
         st.success("Files have been processed successfully ✨")
