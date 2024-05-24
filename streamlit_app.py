@@ -1,8 +1,15 @@
+# --------------------Importing libraries--------------------
+
 import numpy as np
 import pandas as pd
 import streamlit as st
 from datetime import datetime
+
+# --------------------Importing utils.py--------------------
+
 from utils import IvrProcessor
+
+# --------------------Page configuration--------------------
 
 st.set_page_config(
     page_title='IVR Unconnected Phone Numbers',
@@ -12,13 +19,28 @@ st.set_page_config(
 
 hide_streamlit_style = """
             <style>
+            
             #MainMenu {visibility: hidden;}
             header {visibility: hidden;}
             footer {visibility: hidden;}
+            
             </style>
             """
 
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+
+st.markdown("""
+            <style>
+            .block-container {
+                    padding-top: 0rem;
+                    padding-bottom: 0rem;
+                    padding-left: 2rem;
+                    padding-right: 2rem;
+                }
+            </style>
+            """, unsafe_allow_html=True)
+
+st.image("gifs/cable_disconnected.gif")
 
 st.title('IVR Unconnected Phone Numbers')
 
