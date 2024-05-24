@@ -19,28 +19,17 @@ st.set_page_config(
 
 hide_streamlit_style = """
             <style>
-            
-            #MainMenu {visibility: hidden;}
             header {visibility: hidden;}
             footer {visibility: hidden;}
-            
+            #root > div:nth-child(1) > div > div > div > div > section > div {padding-top: 0rem; padding-bottom: 4rem;}
             </style>
             """
 
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
-st.markdown("""
-            <style>
-            .block-container {
-                    padding-top: 0rem;
-                    padding-bottom: 2rem;
-                    padding-left: 2rem;
-                    padding-right: 2rem;
-                }
-            </style>
-            """, unsafe_allow_html=True)
+# --------------------Start main page--------------------
 
-st.image("gifs/cable_disconnected.gif")
+st.image("gifs/cable_disconnected.gif", use_column_width='always')
 
 st.title('IVR Unconnected Phone Numbers')
 
