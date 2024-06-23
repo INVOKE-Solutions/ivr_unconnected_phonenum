@@ -6,6 +6,15 @@ class IvrProcessor:
         pass
 
     def read_file(self, uploaded_file) -> pd.DataFrame:
+        """
+        Read the uploaded CSV file, clean it, and return a DataFrame.
+        
+        Parameters:
+        uploaded_file: Path to the uploaded CSV file.
+
+        Returns:
+        A cleaned pandas DataFrame.
+        """
         
         df = pd.read_csv(uploaded_file, skiprows=1, names=range(100), engine='python')
 
@@ -20,27 +29,24 @@ class IvrProcessor:
 
         return df
 
-
     def extract_unconnected_phonenum(self, df) -> pd.DataFrame:
         """
         Process the uploaded IVR raw results to extract unconnected phone numbers. In other words, we want phone numbers that 
         didn't participate in the IVR survey yet.
 
         Parameters:
-        uploaded_file: A raw IVR result downloaded from the ARIA system.
+        df: The pandas DataFrame containing IVR results.
 
         Returns:
-        A pandas DataFrame
+        A pandas DataFrame with unconnected phone numbers.
 
         Note:
         - The function assumes the uploaded CSV has specific columns of interest, notably 'PhoneNo' and 'UserKeyPress'.
         - It is assumed that the second row of the CSV provides the column names for the data.
         """
 
-        # Keep rows where its respective 'UserKeyPress' column is NA
-        recycled_phonenum = df.loc[df['UserKeyPress'].isna()]
-
-        recycled_phonenum = recycled_phonenum[['PhoneNo']]
+        # Keep rows where 'UserKeyPress' is NA and select 'PhoneNo' column
+        recycled_phonenum = df.loc[df['UserKeyPress'].isna(), ['PhoneNo']]
 
         # Rename to follow usual convention
         recycled_phonenum.rename(columns={'PhoneNo': 'phonenum'}, inplace=True)
@@ -48,19 +54,34 @@ class IvrProcessor:
         return recycled_phonenum
     
     def calculate_total_pickup(self, df) -> int:
+        """
+        Calculate the total number of picked-up calls based on non-NA 'UserKeyPress' values.
 
-        df.dropna(subset='UserKeyPress', inplace=True)
+        Parameters:
+        df: The pandas DataFrame containing IVR results.
 
-        pickup_count = len(df)
+        Returns:
+        The count of picked-up calls.
+        """    
+        # Count rows where 'UserKeyPress' is not NA
+        pickup_count = df['UserKeyPress'].notna().sum()
 
         return pickup_count
 
     def calculate_total_cr(self, df) -> int:
+        """
+        Calculate the total number of complete responses based on non-empty 'UserKeyPress' values.
 
-        # Replace non-keypresses as blanks
+        Parameters:
+        df: The pandas DataFrame containing IVR results.
+
+        Returns:
+        The count of complete responses.
+        """
+
+        # Replace non-keypresses with NaN and count non-NA rows
         complete_keypress = df.replace(r'FlowNo_\d{1,2}=$', np.NaN, regex=True)
 
-        # Remove incomplete rows
         complete_keypress.dropna(inplace=True)
 
         cr_count = len(complete_keypress)
