@@ -35,9 +35,7 @@ st.title('IVR Unconnected Phone Numbers')
 
 st.markdown(
     '''
-    This app removes already participated phone numbers from IVR raw results and churn out the ones who haven't to be re-used in the next round of IVR.  
-
-    **:red[NOTE:]** This web app is meant to be used when all phone numbers for a given population is included in the sampling.
+    This app removes already participated phone numbers from IVR raw results and churn out the ones who haven't to be re-used in the next round of IVR.
     '''
 )
 
