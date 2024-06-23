@@ -47,7 +47,14 @@ class IvrProcessor:
 
         return recycled_phonenum
     
-    
+    def calculate_total_pickup(self, df) -> int:
+
+        df.dropna(subset='UserKeyPress', inplace=True)
+
+        pickup_count = len(df)
+
+        return pickup_count
+
     def calculate_total_cr(self, df) -> int:
 
         # Replace non-keypresses as blanks

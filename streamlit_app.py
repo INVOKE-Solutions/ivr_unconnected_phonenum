@@ -70,6 +70,7 @@ if st.session_state['uploaded_files']:
             ip = IvrProcessor()
 
             unconnected_phonenums = []
+            total_pickup = 0
             total_cr = 0
 
             # Extract unconnected phone numbers only
@@ -80,10 +81,14 @@ if st.session_state['uploaded_files']:
                 unconnected_phonenum = ip.extract_unconnected_phonenum(ivr_file)
                 unconnected_phonenums.append(unconnected_phonenum)
 
+                pickup_count = ip.calculate_total_pickup(ivr_file)
+                total_pickup += pickup_count
+
                 cr_count = ip.calculate_total_cr(ivr_file)
                 total_cr += cr_count
 
-                # Store total CR value in session state
+                # Store total pickup & total CR value in session state
+                st.session_state['total_pickup'] = total_pickup
                 st.session_state['total_cr'] = total_cr
 
             all_unconnected_phonenum = pd.concat(unconnected_phonenums, ignore_index=True).drop_duplicates()
@@ -96,6 +101,8 @@ if st.session_state['uploaded_files']:
 
             st.success("Files have been processed successfully ✨")
 
+            st.write(f"Total Pickup: {st.session_state['total_pickup']:,}")
+
             st.write(f"Total CR: {st.session_state['total_cr']:,}")
 
             st.write(f"Total unconnected phone numbers: {len(st.session_state['all_unconnected_phonenum']):,}")
@@ -104,7 +111,6 @@ if st.session_state['uploaded_files']:
             st.markdown("### Data Preview")
             st.dataframe(st.session_state['all_unconnected_phonenum'].sample(6))
 
-            # st.session_state['total_cr'] = total_cr
             st.session_state['process_complete'] = True  # Set process complete flag
 
 # Warning if 'Process' is clicked before file upload
